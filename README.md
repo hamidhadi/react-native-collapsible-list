@@ -56,7 +56,6 @@ export default class App extends Component {
 |animationConfig|`{}`     | Standard config of [timing animation](https://facebook.github.io/react-native/docs/animated.html#timing)
 |buttonContent          |`<Text>Collapse Button</Text>`     | Content of collapse button
 |items    |`[]`     | Your list items
-|imageResizeMode|`'cover'`    | ResizeMode of the stretchy header image. [You can use one of these values](https://facebook.github.io/react-native/docs/image.html#resizemode)
 |numberOfVisibleItems |`1`       |Number of visible items when lis is not collapse
 |wrapperStyle     |`{}`     |The style of the list wrapper
 
