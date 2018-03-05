@@ -15,16 +15,31 @@ export default class CollapsibleList extends Component {
       calculatedItems: 0,
       calculationCompleted: false,
       //
-      collapse: false,
-      animation: new Animated.Value(0)
+      collapsed: false,
+      initialized: false,
+      animation: new Animated.Value()
     }
+  }
+
+  setMinHeight (event) {
+    this.state.animation.setValue(event.nativeEvent.layout.height)
+    this.setState({ minHeight: event.nativeEvent.layout.height }, () => {
+      this.setState({ initialized: true })
+    })
   }
 
   animate (toValue, callback) {
     const { animation } = this.state
-    const { animationConfig } = this.props
+    const { animationConfig, animationType } = this.props
 
-    Animated.timing(animation, {...animationConfig, toValue}).start(callback)
+    switch (animationType) {
+      case 'spring':
+        Animated.spring(animation, {...animationConfig, toValue}).start(callback)
+        break
+      case 'timing':
+        Animated.timing(animation, {...animationConfig, toValue}).start(callback)
+        break
+    }
   }
 
   onItemLayout (event, index) {
@@ -44,54 +59,56 @@ export default class CollapsibleList extends Component {
     }
   }
 
-  toggleCollapse () {
-    const { maxHeight, minHeight, collapse } = this.state
+  toggle () {
+    const { maxHeight, minHeight, collapsed } = this.state
+    const { onToggle } = this.props
     let nextHeight
 
-    if (collapse) {
+    if (collapsed) {
       nextHeight = minHeight
     } else {
       nextHeight = maxHeight
     }
 
-    this.animate(nextHeight, () => this.setState({ collapse: !collapse }))
+    this.animate(nextHeight, () => this.setState({ collapsed: !collapsed }, () => {
+      if (onToggle) onToggle(this.state.collapsed)
+    }))
   }
 
   render () {
     const {
-      animation
+      animation,
+      initialized
     } = this.state
     const { items, numberOfVisibleItems, buttonContent, wrapperStyle } = this.props
 
     return (
       <View style={wrapperStyle}>
-        <View style={{flex: 1}}>
-          {
-            items.slice(0, numberOfVisibleItems).map((item, index) => (
-              <View
-                key={index}
-              >{item}</View>
-            ))
-          }
-        </View>
-        <Animated.View
-          style={{ flex: 1, overflow: 'hidden', height: animation }}
-        >
-          <View style={{minHeight: items.length * 100}}>
+        <Animated.View style={{ overflow: 'hidden', height: animation }}>
+          <View style={{flex: 1}} onLayout={(event) => this.setMinHeight(event)}>
             {
-              items.slice(numberOfVisibleItems).map((item, index) =>
-                <View
-                  key={index}
-                  onLayout={(event) => this.onItemLayout(event, index)}
-                >{item}</View>)
+              items.slice(0, numberOfVisibleItems).map((item, index) => <View key={index}>{item}</View>)
             }
           </View>
+          {
+            initialized &&
+            <View>
+              {
+                items.slice(numberOfVisibleItems).map((item, index) => (
+                  <View key={index} onLayout={(event) => this.onItemLayout(event, index)}>{item}</View>
+                ))
+              }
+            </View>
+          }
         </Animated.View>
-        <View>
-          <TouchableOpacity onPress={() => this.toggleCollapse()} activeOpacity={0.8}>
-            {buttonContent}
-          </TouchableOpacity>
-        </View>
+        {
+          (numberOfVisibleItems < items.length) &&
+          <View>
+            <TouchableOpacity onPress={() => this.toggle()} activeOpacity={0.8}>
+              {buttonContent}
+            </TouchableOpacity>
+          </View>
+        }
       </View>
     )
   }
@@ -99,16 +116,20 @@ export default class CollapsibleList extends Component {
 
 CollapsibleList.propTypes = {
   animationConfig: PropTypes.object,
+  animationType: PropTypes.oneOf(['spring', 'timing']),
   buttonContent: PropTypes.element,
   items: PropTypes.arrayOf(PropTypes.element),
   numberOfVisibleItems: PropTypes.number,
+  onToggle: PropTypes.func,
   wrapperStyle: PropTypes.object
 }
 
 CollapsibleList.defaultProps = {
   animationConfig: {},
+  animationType: 'timing',
   buttonContent: (<Text>Collapse Button</Text>),
   items: [],
   numberOfVisibleItems: 1,
+  onToggle: null,
   wrapperStyle: {}
 }

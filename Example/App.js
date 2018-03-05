@@ -8,17 +8,34 @@ import {
 import CollapsibleList from './dist'
 
 export default class App extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      collapseButtonText: 'Show More'
+    }
+  }
+
+  onCollapseListToggle (collapsed) {
+    if (collapsed) {
+      this.setState({ collapseButtonText: 'Show Less' })
+    } else {
+      this.setState({ collapseButtonText: 'Show More' })
+    }
+  }
+
   render () {
     return (
       <View style={styles.container}>
         <ScrollView style={{flex: 1, padding: 10}}>
           <CollapsibleList
-            numberOfVisibleItems={1}
-            animationConfig={{ duration: 400 }}
+            numberOfVisibleItems={2}
+            animationConfig={{ duration: 300 }}
             wrapperStyle={styles.wrapperCollapsibleList}
+            onToggle={(collapsed) => this.onCollapseListToggle(collapsed)}
             buttonContent={
               <View style={styles.button}>
-                <Text style={styles.buttonText}>Collapse Button</Text>
+                <Text style={styles.buttonText}>{this.state.collapseButtonText}</Text>
               </View>
             }
             items={[
@@ -34,6 +51,18 @@ export default class App extends Component {
 
                   Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
                 </Text>
+              </View>,
+              <View style={styles.collapsibleItem}>
+                <Text>Collapsable List Item</Text>
+              </View>,
+              <View style={styles.collapsibleItem}>
+                <Text>Collapsable List Item</Text>
+              </View>,
+              <View style={styles.collapsibleItem}>
+                <Text>Collapsable List Item</Text>
+              </View>,
+              <View style={styles.collapsibleItem}>
+                <Text>Collapsable List Item</Text>
               </View>,
               <View style={styles.collapsibleItem}>
                 <Text>Collapsable List Item</Text>

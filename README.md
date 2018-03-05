@@ -51,13 +51,15 @@ export default class App extends Component {
 
 ## Properties
 
-| Prop          | Default | Description|
-|---------------|:-------:|------------|
-|animationConfig|`{}`     | Standard config of [timing animation](https://facebook.github.io/react-native/docs/animated.html#timing)
-|buttonContent          |`<Text>Collapse Button</Text>`     | Content of collapse button
-|items    |`[]`     | Your list items
-|numberOfVisibleItems |`1`       |Number of visible items when lis is not collapse
-|wrapperStyle     |`{}`     |The style of the list wrapper
+| Prop          | Type    | Default  | Description|
+|---------------|:-------:|:--------:|------------|
+|animationType  |`String` |`'timing'`|You can use `timing` or `spring` animation
+|animationConfig|`Object` |`{}`      | Standard config of [timing](https://facebook.github.io/react-native/docs/animated.html#timing)/[spring](https://facebook.github.io/react-native/docs/animated.html#spring) animation
+|buttonContent  |`component`|`<Text>Collapse Button</Text>`| Content of collapse button
+|items          |`array`|`[]`     | Your list items that can be array of any component
+|numberOfVisibleItems |`number`|`1`|Number of visible items when lis is not collapsed
+|onToggle       |`function`|`null`|Callback function for toggling the list with collapsed parameter which can be `true`(list is collapsed) or `false`(list is not collapsed)
+|wrapperStyle   |`object`|`{}`|The style of the list wrapper
 
 ## Contribution
 This project is a basic collapsible list and must be improve. 
