@@ -27,20 +27,17 @@ export default class App extends Component {
   render () {
     return (
       <View style={styles.container}>
-        <CollapsibleList
-          numberOfVisibleItems={1}
-          items={[
-            <View style={styles.collapsibleItem}>
-              <Text>Hello Collapsable List :)</Text>
-            </View>,
-            <View style={styles.collapsibleItem}>
-              <Text>Collapsable List Item</Text>
-            </View>,
-            <View style={styles.collapsibleItem}>
-              <Text>Collapsable List Item</Text>
-            </View>
-          ]}
-        />
+        <CollapsibleList numberOfVisibleItems={1}>
+          <View style={styles.collapsibleItem}>
+            <Text>Hello Collapsable List :)</Text>
+          </View>
+          <View style={styles.collapsibleItem}>
+            <Text>Collapsable List Item</Text>
+          </View>
+          <View style={styles.collapsibleItem}>
+            <Text>Collapsable List Item</Text>
+          </View>
+        </CollapsibleList>
       </View>
     )
   }
@@ -56,7 +53,6 @@ export default class App extends Component {
 |animationType  |`String` |`'timing'`|You can use `timing` or `spring` animation
 |animationConfig|`Object` |`{}`      | Standard config of [timing](https://facebook.github.io/react-native/docs/animated.html#timing)/[spring](https://facebook.github.io/react-native/docs/animated.html#spring) animation
 |buttonContent  |`component`|`<Text>Collapse Button</Text>`| Content of collapse button
-|items          |`array`|`[]`     | Your list items that can be array of any component
 |numberOfVisibleItems |`number`|`1`|Number of visible items when lis is not collapsed
 |onToggle       |`function`|`null`|Callback function for toggling the list with collapsed parameter which can be `true`(list is collapsed) or `false`(list is not collapsed)
 |wrapperStyle   |`object`|`{}`|The style of the list wrapper
