@@ -80,19 +80,21 @@ export default class CollapsibleList extends Component {
     } = this.state
     const { numberOfVisibleItems, buttonContent, wrapperStyle, children } = this.props
 
+    const childArray = React.Children.toArray(children);
+
     return (
       <View style={wrapperStyle}>
         <Animated.View style={{ overflow: 'hidden', height: animation }}>
           <View style={{flex: 1}} onLayout={(event) => this.setMinHeight(event)}>
             {
-              React.Children.toArray(children).slice(0, numberOfVisibleItems)
+              childArray.slice(0, numberOfVisibleItems)
             }
           </View>
           {
             initialized &&
             <View>
               {
-                React.Children.toArray(children).slice(numberOfVisibleItems).map((item, index) => (
+                childArray.slice(numberOfVisibleItems).map((item, index) => (
                   <View key={index} onLayout={(event) => this.onItemLayout(event)}>{item}</View>
                 ))
               }
