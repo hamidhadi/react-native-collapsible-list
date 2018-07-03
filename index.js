@@ -12,7 +12,6 @@ export default class CollapsibleList extends Component {
       minHeight: 0,
       //
       // Track items that was calculated their size
-      calculatedItems: 0,
       calculationCompleted: false,
       //
       collapsed: false,
@@ -38,21 +37,13 @@ export default class CollapsibleList extends Component {
     Animated[type](animation, {...animationConfig, toValue}).start(callback)
   }
 
-  onItemLayout = (event) => {
-    const { calculatedItems, calculationCompleted } = this.state
-    const { children, numberOfVisibleItems } = this.props
-    const { height } = event.nativeEvent.layout
+  setMaxHeight = (event) => {
+    const { calculationCompleted } = this.state
+    const { height: maxHeight } = event.nativeEvent.layout
 
-    // Generate maximum height of list based on height of the items
     if (!calculationCompleted) {
-      this.setState(prevState => ({ maxHeight: prevState.maxHeight + height }), () => {
-        if (calculatedItems < React.Children.count(children)) {
-          this.setState(prevState => ({ calculatedItems: prevState.calculatedItems + 1 }))
-        }
-
-        if (calculatedItems === (React.Children.count(children) - 1) - numberOfVisibleItems) {
-          this.setState({ calculationCompleted: true })
-        }
+      this.setState(prevState => ({ maxHeight }), () => {
+        this.setState({ calculationCompleted: true })
       })
     }
   }
@@ -92,17 +83,15 @@ export default class CollapsibleList extends Component {
           </View>
           {
             initialized &&
-            <View>
+            <View onLayout={this.setMaxHeight}>
               {
-                childrenArr.slice(numberOfVisibleItems).map((item, index) => (
-                  <View key={index} onLayout={this.onItemLayout}>{item}</View>
-                ))
+                childrenArr.slice(numberOfVisibleItems)
               }
             </View>
           }
         </Animated.View>
         {
-          (numberOfVisibleItems < React.Children.count(children)) &&
+          (numberOfVisibleItems < childrenArr.length) &&
           <View>
             <TouchableOpacity onPress={this.toggle} activeOpacity={0.8}>
               {buttonContent}

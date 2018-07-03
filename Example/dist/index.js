@@ -12,7 +12,6 @@ export default class CollapsibleList extends Component {
       minHeight: 0,
       //
       // Track items that was calculated their size
-      calculatedItems: 0,
       calculationCompleted: false,
       //
       collapsed: false,
@@ -21,7 +20,7 @@ export default class CollapsibleList extends Component {
     }
   }
 
-  setMinHeight (event) {
+  setMinHeight = (event) => {
     const { height: minHeight } = event.nativeEvent.layout
 
     this.state.animation.setValue(minHeight)
@@ -34,36 +33,22 @@ export default class CollapsibleList extends Component {
     const { animation } = this.state
     const { animationConfig, animationType } = this.props
 
-    switch (animationType) {
-      case 'spring':
-        Animated.spring(animation, {...animationConfig, toValue}).start(callback)
-        break
-      case 'timing':
-        Animated.timing(animation, {...animationConfig, toValue}).start(callback)
-        break
-    }
+    const type = animationType === 'spring' ? animationType : 'timing';
+    Animated[type](animation, {...animationConfig, toValue}).start(callback)
   }
 
-  onItemLayout (event) {
-    const { calculatedItems, calculationCompleted } = this.state
-    const { children, numberOfVisibleItems } = this.props
-    const { height } = event.nativeEvent.layout
+  setMaxHeight = (event) => {
+    const { calculationCompleted } = this.state
+    const { height: maxHeight } = event.nativeEvent.layout
 
-    // Generate maximum height of list based on height of the items
     if (!calculationCompleted) {
-      this.setState(prevState => ({ maxHeight: prevState.maxHeight + height }), () => {
-        if (calculatedItems < React.Children.count(children)) {
-          this.setState(prevState => ({ calculatedItems: prevState.calculatedItems + 1 }))
-        }
-
-        if (calculatedItems === (React.Children.count(children) - 1) - numberOfVisibleItems) {
-          this.setState({ calculationCompleted: true })
-        }
+      this.setState(prevState => ({ maxHeight }), () => {
+        this.setState({ calculationCompleted: true })
       })
     }
   }
 
-  toggle () {
+  toggle = () => {
     const { maxHeight, minHeight, collapsed } = this.state
     const { onToggle } = this.props
     let nextHeight
@@ -86,29 +71,29 @@ export default class CollapsibleList extends Component {
     } = this.state
     const { numberOfVisibleItems, buttonContent, wrapperStyle, children } = this.props
 
+    const childrenArr = React.Children.toArray(children);
+
     return (
       <View style={wrapperStyle}>
         <Animated.View style={{ overflow: 'hidden', height: animation }}>
-          <View style={{flex: 1}} onLayout={(event) => this.setMinHeight(event)}>
+          <View style={{flex: 1}} onLayout={this.setMinHeight}>
             {
-              React.Children.toArray(children).slice(0, numberOfVisibleItems)
+              childrenArr.slice(0, numberOfVisibleItems)
             }
           </View>
           {
             initialized &&
-            <View>
+            <View onLayout={this.setMaxHeight}>
               {
-                React.Children.toArray(children).slice(numberOfVisibleItems).map((item, index) => (
-                  <View key={index} onLayout={(event) => this.onItemLayout(event)}>{item}</View>
-                ))
+                childrenArr.slice(numberOfVisibleItems)
               }
             </View>
           }
         </Animated.View>
         {
-          (numberOfVisibleItems < React.Children.count(children)) &&
+          (numberOfVisibleItems < childrenArr.length) &&
           <View>
-            <TouchableOpacity onPress={() => this.toggle()} activeOpacity={0.8}>
+            <TouchableOpacity onPress={this.toggle} activeOpacity={0.8}>
               {buttonContent}
             </TouchableOpacity>
           </View>
