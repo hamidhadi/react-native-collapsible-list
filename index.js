@@ -21,7 +21,7 @@ export default class CollapsibleList extends Component {
     }
   }
 
-  setMinHeight (event) {
+  setMinHeight = (event) => {
     const { height: minHeight } = event.nativeEvent.layout
 
     this.state.animation.setValue(minHeight)
@@ -38,7 +38,7 @@ export default class CollapsibleList extends Component {
     Animated[type](animation, {...animationConfig, toValue}).start(callback)
   }
 
-  onItemLayout (event) {
+  onItemLayout = (event) => {
     const { calculatedItems, calculationCompleted } = this.state
     const { children, numberOfVisibleItems } = this.props
     const { height } = event.nativeEvent.layout
@@ -57,7 +57,7 @@ export default class CollapsibleList extends Component {
     }
   }
 
-  toggle () {
+  toggle = () => {
     const { maxHeight, minHeight, collapsed } = this.state
     const { onToggle } = this.props
     let nextHeight
@@ -80,22 +80,22 @@ export default class CollapsibleList extends Component {
     } = this.state
     const { numberOfVisibleItems, buttonContent, wrapperStyle, children } = this.props
 
-    const childArray = React.Children.toArray(children);
+    const childrenArr = React.Children.toArray(children);
 
     return (
       <View style={wrapperStyle}>
         <Animated.View style={{ overflow: 'hidden', height: animation }}>
-          <View style={{flex: 1}} onLayout={(event) => this.setMinHeight(event)}>
+          <View style={{flex: 1}} onLayout={this.setMinHeight}>
             {
-              childArray.slice(0, numberOfVisibleItems)
+              childrenArr.slice(0, numberOfVisibleItems)
             }
           </View>
           {
             initialized &&
             <View>
               {
-                childArray.slice(numberOfVisibleItems).map((item, index) => (
-                  <View key={index} onLayout={(event) => this.onItemLayout(event)}>{item}</View>
+                childrenArr.slice(numberOfVisibleItems).map((item, index) => (
+                  <View key={index} onLayout={this.onItemLayout}>{item}</View>
                 ))
               }
             </View>
@@ -104,7 +104,7 @@ export default class CollapsibleList extends Component {
         {
           (numberOfVisibleItems < React.Children.count(children)) &&
           <View>
-            <TouchableOpacity onPress={() => this.toggle()} activeOpacity={0.8}>
+            <TouchableOpacity onPress={this.toggle} activeOpacity={0.8}>
               {buttonContent}
             </TouchableOpacity>
           </View>
