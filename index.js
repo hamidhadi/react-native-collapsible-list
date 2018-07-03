@@ -34,14 +34,8 @@ export default class CollapsibleList extends Component {
     const { animation } = this.state
     const { animationConfig, animationType } = this.props
 
-    switch (animationType) {
-      case 'spring':
-        Animated.spring(animation, {...animationConfig, toValue}).start(callback)
-        break
-      case 'timing':
-        Animated.timing(animation, {...animationConfig, toValue}).start(callback)
-        break
-    }
+    const type = animationType === 'spring' ? animationType : 'timing';
+    Animated[type](animation, {...animationConfig, toValue}).start(callback)
   }
 
   onItemLayout (event) {
