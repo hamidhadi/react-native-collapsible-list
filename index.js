@@ -1,137 +1,106 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { View, Animated, TouchableOpacity, Text } from 'react-native'
+import React, { Component } from "react";
+import {
+  View,
+  TouchableOpacity,
+  Platform,
+  UIManager,
+  LayoutAnimation
+} from "react-native";
 
 export default class CollapsibleList extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
+
+    if (
+      Platform.OS === "android" &&
+      UIManager.setLayoutAnimationEnabledExperimental
+    ) {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+
+    this.animationConfig = {
+      duration: 700,
+      update: {
+        type: "spring",
+        springDamping: 0.7,
+        property: "scaleXY"
+      }
+    };
 
     this.state = {
-      // Animation stop points
-      maxHeight: 0,
       minHeight: 0,
-      //
-      // Track items that was calculated their size
-      calculatedItems: 0,
-      calculationCompleted: false,
-      //
+      currentHeight: null,
       collapsed: false,
-      initialized: false,
-      animation: new Animated.Value()
-    }
+      initialized: false
+    };
   }
 
-  setMinHeight (event) {
-    const { height: minHeight } = event.nativeEvent.layout
+  setMinHeight(event) {
+    const { height: minHeight } = event.nativeEvent.layout;
 
-    this.state.animation.setValue(minHeight)
     this.setState({ minHeight }, () => {
-      this.setState({ initialized: true })
-    })
+      this.setState({ initialized: true, currentHeight: minHeight });
+    });
   }
 
-  animate (toValue, callback) {
-    const { animation } = this.state
-    const { animationConfig, animationType } = this.props
-
-    switch (animationType) {
-      case 'spring':
-        Animated.spring(animation, {...animationConfig, toValue}).start(callback)
-        break
-      case 'timing':
-        Animated.timing(animation, {...animationConfig, toValue}).start(callback)
-        break
-    }
-  }
-
-  onItemLayout (event) {
-    const { calculatedItems, calculationCompleted } = this.state
-    const { children, numberOfVisibleItems } = this.props
-    const { height } = event.nativeEvent.layout
-
-    // Generate maximum height of list based on height of the items
-    if (!calculationCompleted) {
-      this.setState(prevState => ({ maxHeight: prevState.maxHeight + height }), () => {
-        if (calculatedItems < React.Children.count(children)) {
-          this.setState(prevState => ({ calculatedItems: prevState.calculatedItems + 1 }))
-        }
-
-        if (calculatedItems === (React.Children.count(children) - 1) - numberOfVisibleItems) {
-          this.setState({ calculationCompleted: true })
-        }
-      })
-    }
-  }
-
-  toggle () {
-    const { maxHeight, minHeight, collapsed } = this.state
-    const { onToggle } = this.props
-    let nextHeight
+  toggle() {
+    const { minHeight, collapsed } = this.state;
+    const { onToggle, animationConfig } = this.props;
+    let nextHeight;
 
     if (collapsed) {
-      nextHeight = minHeight
+      nextHeight = minHeight;
     } else {
-      nextHeight = minHeight + maxHeight
+      nextHeight = null;
     }
 
-    this.animate(nextHeight, () => this.setState({ collapsed: !collapsed }, () => {
-      if (onToggle) onToggle(this.state.collapsed)
-    }))
+    LayoutAnimation.configureNext({
+      ...this.animationConfig,
+      ...animationConfig
+    });
+    this.setState({ currentHeight: nextHeight, collapsed: !collapsed }, () => {
+      if (onToggle) {
+        onToggle(this.state.collapsed);
+      }
+    });
   }
 
-  render () {
+  render() {
+    const { initialized, currentHeight } = this.state;
     const {
-      animation,
-      initialized
-    } = this.state
-    const { numberOfVisibleItems, buttonContent, wrapperStyle, children } = this.props
+      numberOfVisibleItems,
+      buttonContent,
+      wrapperStyle,
+      children
+    } = this.props;
 
     return (
       <View style={wrapperStyle}>
-        <Animated.View style={{ overflow: 'hidden', height: animation }}>
-          <View style={{flex: 1}} onLayout={(event) => this.setMinHeight(event)}>
-            {
-              React.Children.toArray(children).slice(0, numberOfVisibleItems)
-            }
+        <View style={{ overflow: "hidden", height: currentHeight }}>
+          <View
+            style={{ flex: 1 }}
+            onLayout={event => this.setMinHeight(event)}
+          >
+            {React.Children.toArray(children).slice(0, numberOfVisibleItems)}
           </View>
-          {
-            initialized &&
+          {initialized && (
             <View>
-              {
-                React.Children.toArray(children).slice(numberOfVisibleItems).map((item, index) => (
-                  <View key={index} onLayout={(event) => this.onItemLayout(event)}>{item}</View>
-                ))
-              }
+              {React.Children.toArray(children)
+                .slice(numberOfVisibleItems)
+                .map((item, index) => (
+                  <View key={index}>{item}</View>
+                ))}
             </View>
-          }
-        </Animated.View>
-        {
-          (numberOfVisibleItems < React.Children.count(children)) &&
+          )}
+        </View>
+        {numberOfVisibleItems < React.Children.count(children) && (
           <View>
             <TouchableOpacity onPress={() => this.toggle()} activeOpacity={0.8}>
               {buttonContent}
             </TouchableOpacity>
           </View>
-        }
+        )}
       </View>
-    )
+    );
   }
-}
-
-CollapsibleList.propTypes = {
-  animationConfig: PropTypes.object,
-  animationType: PropTypes.oneOf(['spring', 'timing']),
-  buttonContent: PropTypes.element,
-  numberOfVisibleItems: PropTypes.number,
-  onToggle: PropTypes.func,
-  wrapperStyle: PropTypes.object
-}
-
-CollapsibleList.defaultProps = {
-  animationConfig: {},
-  animationType: 'timing',
-  buttonContent: (<Text>Collapse Button</Text>),
-  numberOfVisibleItems: 1,
-  onToggle: null,
-  wrapperStyle: {}
 }
