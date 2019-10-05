@@ -18,7 +18,15 @@
   ],
   "author": "Hamid Hadi <hamidhadi@live.com> (https://github.com/hamidhadi)",
   "license": "GPL-2.0",
-  "dependencies": {
-    "prop-types": "^15.6.1"
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^16.8.1",
+    "react-native": ">=0.55"
+  },
+  "devDependencies": {
+    "react": "16.9.0",
+    "react-native": "0.61.1",
+    "@types/react": "^16.9.3",
+    "@types/react-native": "^0.60.17"
   }
 }
