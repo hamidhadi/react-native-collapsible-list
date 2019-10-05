@@ -3,19 +3,32 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "run-ios": "react-native run-ios --simulator \"iPhone 11 Pro\"",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "prop-types": "^15.6.1",
-    "react": "^16.3.0-alpha.1",
-    "react-native": "0.54.0"
+    "react": "16.9.0",
+    "react-native": "0.61.1",
+    "react-native-collapsible-list": "file:..",
+    "typescript": "^3.6.3"
   },
   "devDependencies": {
-    "babel-jest": "22.4.1",
-    "babel-preset-react-native": "4.0.0",
-    "jest": "22.4.2",
-    "react-test-renderer": "^16.3.0-alpha.1"
+    "@babel/core": "7.6.2",
+    "@babel/runtime": "7.6.2",
+    "@react-native-community/eslint-config": "0.0.3",
+    "@types/jest": "^24.0.18",
+    "@types/react": "^16.9.3",
+    "@types/react-native": "^0.60.17",
+    "@types/react-test-renderer": "^16.9.0",
+    "babel-jest": "24.9.0",
+    "eslint": "6.5.0",
+    "jest": "24.9.0",
+    "metro-react-native-babel-preset": "0.51.1",
+    "react-test-renderer": "16.9.0"
   },
   "jest": {
     "preset": "react-native"
