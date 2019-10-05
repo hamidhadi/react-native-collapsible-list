@@ -1,12 +1,14 @@
 # react-native-collapsible-list
+
 A ReactNative collapsible list component
 
-![StretchyBatman](/demo.gif)
+![react-native-collapsible-list example](/demo.gif)
 
 ## Installation
 
 You can install this package via `yarn`:
-```bash
+
+```
 yarn add react-native-collapsible-list
 ```
 
@@ -19,15 +21,23 @@ npm install react-native-collapsible-list --save
 ## Basic Usage
 
 ```js
-import React, { Component } from 'react'
-import { Text, View } from 'react-native'
-import CollapsibleList from 'react-native-collapsible-list'
+import React, { Component } from "react";
+import { Text, View } from "react-native";
+import CollapsibleList from "react-native-collapsible-list";
 
 export default class App extends Component {
-  render () {
+  render() {
     return (
       <View style={styles.container}>
-        <CollapsibleList numberOfVisibleItems={1}>
+        <CollapsibleList
+          numberOfVisibleItems={1}
+          wrapperStyle={styles.wrapperCollapsibleList}
+          buttonContent={
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>{buttonText}</Text>
+            </View>
+          }
+        >
           <View style={styles.collapsibleItem}>
             <Text>Hello Collapsable List :)</Text>
           </View>
@@ -35,32 +45,49 @@ export default class App extends Component {
             <Text>Collapsable List Item</Text>
           </View>
           <View style={styles.collapsibleItem}>
-            <Text>Collapsable List Item</Text>
+            <Text>Another Collapsable List Item</Text>
           </View>
         </CollapsibleList>
       </View>
-    )
+    );
   }
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.1)"
+  },
+  wrapperCollapsibleList: {
+    flex: 1,
+    marginTop: 20,
+    overflow: "hidden",
+    backgroundColor: "#FFF",
+    borderRadius: 5
+  },
+  collapsibleItem: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: "#CCC",
+    padding: 10
+  }
+});
 ```
-
 
 ## Properties
 
-| Prop          | Type    | Default  | Description|
-|---------------|:-------:|:--------:|------------|
-|animationType  |`String` |`'timing'`|You can use `timing` or `spring` animation
-|animationConfig|`Object` |`{}`      | Standard config of [timing](https://facebook.github.io/react-native/docs/animated.html#timing)/[spring](https://facebook.github.io/react-native/docs/animated.html#spring) animation
-|buttonContent  |`component`|`<Text>Collapse Button</Text>`| Content of collapse button
-|numberOfVisibleItems |`number`|`1`|Number of visible items when lis is not collapsed
-|onToggle       |`function`|`null`|Callback function for toggling the list with collapsed parameter which can be `true`(list is collapsed) or `false`(list is not collapsed)
-|wrapperStyle   |`object`|`{}`|The style of the list wrapper
+| Prop                 |                                               Type                                               |                                             Default                                             | Description                                                                                                                                                                          |
+| :-------------------- | :---------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| animationConfig      | [ReactNative.LayoutAnimationConfig](https://facebook.github.io/react-native/docs/layoutanimation#parameters) | ```{duration: 700, update: { type: "spring", springDamping: 0.7, property: "scaleXY" }}``` | Overrides each property of the default value if specified                                                                                                                                      |
+| buttonContent        |                                           `React.ReactNode`                                            |                                 `null`                                  | Content of collapse button                                                                                                                                                           |
+| numberOfVisibleItems |                                             `number`                                             |                                               `1`                                               | Number of visible items when lis is not collapsed                                                                                                                                    |
+| onToggle             |                                            `function`                                            |                                             `null`                                              | Callback function for toggling the list with collapsed parameter which can be `true`(list is collapsed) or `false`(list is not collapsed)                                            |
+| wrapperStyle         |                                             `ReactNative.ViewStyle`                                             |                                              `null`                                               | The style of the list wrapper                                                                                                                                                        |
 
 ## Contribution
-This project is a basic collapsible list and must be improve. 
-You can fork the repository, improve or fix some part of it and then send the pull requests back if you want to see them here. I really appreciate that. :wink:
 
+You can fork the repository, improve or fix some part of it and then send the pull requests back if you want to see them here. I really appreciate that. :wink:
 
 ## License
 
