@@ -17,7 +17,7 @@
     "component"
   ],
   "author": "Hamid Hadi <hamidhadi@live.com> (https://github.com/hamidhadi)",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "dependencies": {},
   "peerDependencies": {
     "react": "^16.8.1",
