@@ -1,6 +1,6 @@
 {
   "name": "react-native-collapsible-list",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "A ReactNative collapsible list component",
   "main": "index.js",
   "scripts": {
