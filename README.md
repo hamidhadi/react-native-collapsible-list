@@ -92,4 +92,4 @@ You can fork the repository, improve or fix some part of it and then send the pu
 
 ## License
 
-Licensed under the [GPL-2.0](https://github.com/hamidhadi/react-native-collapsible-list/blob/master/LICENSE).
+Licensed under the [MIT](https://github.com/hamidhadi/react-native-collapsible-list/blob/master/LICENSE).
